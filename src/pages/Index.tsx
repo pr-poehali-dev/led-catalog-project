@@ -227,54 +227,55 @@ const Index = () => {
             </Sheet>
 
             <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <Icon name="ShoppingCart" size={20} />
-                {cart.length > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0">
-                    {cart.length}
-                  </Badge>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Корзина</SheetTitle>
-                <SheetDescription>
-                  {cart.length === 0 ? 'Корзина пуста' : `Товаров: ${cart.length}`}
-                </SheetDescription>
-              </SheetHeader>
-              <div className="mt-8 space-y-4">
-                {cart.map((item, index) => (
-                  <div key={`${item.id}-${index}`} className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">{item.price} ₽</p>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="relative">
+                  <Icon name="ShoppingCart" size={20} />
+                  {cart.length > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0">
+                      {cart.length}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Корзина</SheetTitle>
+                  <SheetDescription>
+                    {cart.length === 0 ? 'Корзина пуста' : `Товаров: ${cart.length}`}
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-8 space-y-4">
+                  {cart.map((item, index) => (
+                    <div key={`${item.id}-${index}`} className="flex items-center justify-between gap-4">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{item.name}</p>
+                        <p className="text-sm text-muted-foreground">{item.price} ₽</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        <Icon name="X" size={16} />
+                      </Button>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeFromCart(item.id)}
-                    >
-                      <Icon name="X" size={16} />
-                    </Button>
-                  </div>
-                ))}
-                {cart.length > 0 && (
-                  <>
-                    <Separator />
-                    <div className="flex justify-between items-center font-bold">
-                      <span>Итого:</span>
-                      <span>{getTotalPrice()} ₽</span>
-                    </div>
-                    <Button className="w-full">
-                      Оформить заказ
-                    </Button>
-                  </>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+                  ))}
+                  {cart.length > 0 && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between items-center font-bold">
+                        <span>Итого:</span>
+                        <span>{getTotalPrice()} ₽</span>
+                      </div>
+                      <Button className="w-full">
+                        Оформить заказ
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
 
