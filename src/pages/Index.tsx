@@ -93,6 +93,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [cart, setCart] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const [filters, setFilters] = useState({
     power: [] as number[],
@@ -186,7 +187,46 @@ const Index = () => {
             ))}
           </nav>
 
-          <Sheet>
+          <div className="flex items-center gap-2">
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-2">
+                    <Icon name="Lightbulb" size={24} className="text-primary" />
+                    LED Store
+                  </SheetTitle>
+                  <SheetDescription>
+                    Навигация по сайту
+                  </SheetDescription>
+                </SheetHeader>
+                <nav className="mt-8 flex flex-col gap-4">
+                  {navItems.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveSection(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`flex items-center gap-3 text-left p-3 rounded-lg transition-colors ${
+                        activeSection === item.id
+                          ? 'bg-primary text-primary-foreground'
+                          : 'hover:bg-muted'
+                      }`}
+                    >
+                      <Icon name={item.icon as any} size={20} />
+                      <span className="font-medium">{item.label}</span>
+                    </button>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
+
+            <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="relative">
                 <Icon name="ShoppingCart" size={20} />
