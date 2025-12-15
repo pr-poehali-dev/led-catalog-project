@@ -7,6 +7,10 @@ import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 type Product = {
   id: number;
@@ -94,6 +98,14 @@ const Index = () => {
   const [cart, setCart] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    comment: ''
+  });
   
   const [filters, setFilters] = useState({
     power: [] as number[],
@@ -152,6 +164,30 @@ const Index = () => {
 
   const getTotalPrice = () => {
     return cart.reduce((sum, item) => sum + item.price, 0);
+  };
+
+  const handleCheckout = () => {
+    setCheckoutOpen(true);
+  };
+
+  const handleOrderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!orderForm.name || !orderForm.phone || !orderForm.address) {
+      toast.error('Заполните обязательные поля');
+      return;
+    }
+
+    toast.success('Заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.');
+    setCheckoutOpen(false);
+    setCart([]);
+    setOrderForm({
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      comment: ''
+    });
   };
 
   const navItems = [
@@ -267,7 +303,7 @@ const Index = () => {
                         <span>Итого:</span>
                         <span>{getTotalPrice()} ₽</span>
                       </div>
-                      <Button className="w-full">
+                      <Button className="w-full" onClick={handleCheckout}>
                         Оформить заказ
                       </Button>
                     </>
@@ -667,6 +703,102 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Icon name="ShoppingBag" size={24} />
+              Оформление заказа
+            </DialogTitle>
+            <DialogDescription>
+              Заполните форму, и мы свяжемся с вами для подтверждения заказа
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleOrderSubmit} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Имя *</Label>
+              <Input
+                id="name"
+                placeholder="Иван Иванов"
+                value={orderForm.name}
+                onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Телефон *</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+7 (999) 123-45-67"
+                value={orderForm.phone}
+                onChange={(e) => setOrderForm({ ...orderForm, phone: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="example@mail.ru"
+                value={orderForm.email}
+                onChange={(e) => setOrderForm({ ...orderForm, email: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">Адрес доставки *</Label>
+              <Textarea
+                id="address"
+                placeholder="Москва, ул. Примерная, д. 1, кв. 1"
+                value={orderForm.address}
+                onChange={(e) => setOrderForm({ ...orderForm, address: e.target.value })}
+                required
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="comment">Комментарий к заказу</Label>
+              <Textarea
+                id="comment"
+                placeholder="Дополнительная информация..."
+                value={orderForm.comment}
+                onChange={(e) => setOrderForm({ ...orderForm, comment: e.target.value })}
+                rows={3}
+              />
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Товаров:</span>
+                <span className="font-medium">{cart.length} шт.</span>
+              </div>
+              <div className="flex justify-between text-lg font-bold">
+                <span>Итого к оплате:</span>
+                <span className="text-primary">{getTotalPrice()} ₽</span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setCheckoutOpen(false)}>
+                Отмена
+              </Button>
+              <Button type="submit" className="flex-1">
+                <Icon name="Check" size={16} className="mr-2" />
+                Подтвердить заказ
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
